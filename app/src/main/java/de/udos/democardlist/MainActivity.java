@@ -71,7 +71,7 @@ public class MainActivity extends ActionBarActivity {
 
             mRecyclerView = (RecyclerView) rootView.findViewById(R.id.recycler_view);
             mLayoutManager = new LinearLayoutManager(getActivity());
-            mAdapter = new CardViewItemAdapter(new String[] {"TEST1", "TEST2"});
+            mAdapter = new CardViewItemAdapter(new String[] {"TEST1", "TEST2", "TEST3"});
 
             mRecyclerView.setHasFixedSize(true);
             mRecyclerView.setLayoutManager(mLayoutManager);
