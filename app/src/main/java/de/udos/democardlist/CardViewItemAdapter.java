@@ -13,7 +13,7 @@ public class CardViewItemAdapter extends RecyclerView.Adapter<CardViewItemAdapte
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
 
-        private TextView mTextView;
+        private final TextView mTextView;
 
         public ViewHolder(View v) {
 
