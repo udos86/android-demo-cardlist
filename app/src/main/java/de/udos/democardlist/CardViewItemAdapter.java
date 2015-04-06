@@ -16,14 +16,13 @@ public class CardViewItemAdapter extends RecyclerView.Adapter<CardViewItemAdapte
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
 
-        //private final TextView mTextView;
-        //private final TextView mTextViewRating;
+        private final Indicator mIndicator;
+
 
         public ViewHolder(View v) {
 
             super(v);
-            //mTextView = (TextView) v.findViewById(R.id.text_view);
-            //mTextViewRating = (TextView) v.findViewById(R.id.tv_rating);
+            mIndicator = (Indicator) v.findViewById(R.id.indicator_view);
         }
     }
 
@@ -45,12 +44,14 @@ public class CardViewItemAdapter extends RecyclerView.Adapter<CardViewItemAdapte
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
 
-        //holder.mTextView.setText(mData[position]);
-        //holder.mTextViewRating.setText("85%");
+
+        holder.mIndicator.setLabelText("67%");
+        holder.mIndicator.setRating(0.67f);
 
         Animation anim = AnimationUtils.loadAnimation(mContext, android.R.anim.fade_in);
         anim.setStartOffset(200 * position);
         holder.itemView.startAnimation(anim);
+
     }
 
     @Override

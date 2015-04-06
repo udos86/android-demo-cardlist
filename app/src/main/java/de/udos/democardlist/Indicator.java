@@ -11,6 +11,7 @@ import android.graphics.SweepGradient;
 import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.View;
 
@@ -26,8 +27,8 @@ public class Indicator extends View {
     private float mCenterY;
     private int mOffsetX;
     private int mOffsetY;
-    private float mLabelOffsetY = 0;
     private Paint mArcPaint = new Paint();
+    private Paint mArcEmptyPaint = new Paint(); // TODO
     private Paint mInnerPaint = new Paint();
     private Paint mLabelPaint = new Paint();
     private int[] mAttrArcColors;
@@ -43,7 +44,7 @@ public class Indicator extends View {
     private boolean mAttrLabelAutoSize;
     private int mAttrLabelColor;
     private int mAttrLabelPadding;
-    private String mAttrLabelText = "";
+    private String mAttrLabelText;
     private int mAttrLabelTextSize;
     private float mAttrRating;
 
@@ -59,6 +60,16 @@ public class Indicator extends View {
         mContext = context;
 
         initAttributes(attrs);
+    }
+
+    public int getLabelColor  () {
+        return mAttrLabelColor;
+    }
+
+    public void setLabelColor (int labelColor) {
+
+        this.mAttrLabelColor = labelColor;
+        invalidate();
     }
 
     public String getLabelText() {
@@ -96,8 +107,6 @@ public class Indicator extends View {
 
         mCenterX = width / 2; //mDiameter/2 + mOffsetX;
         mCenterY = height / 2; //mDiameter/2 + mOffsetY;
-
-        initPaint();
     }
 
     @Override
@@ -105,6 +114,8 @@ public class Indicator extends View {
 
         float targetArc = calcTargetArc();
         RectF rectArc = getArcRect();
+
+        updatePaint();
 
         canvas.save();
         canvas.rotate(-90, mCenterX, mCenterY);
@@ -135,7 +146,8 @@ public class Indicator extends View {
 
         canvas.drawCircle(mCenterX, mCenterY, mInnerRadius, mInnerPaint);
         canvas.restore();
-        canvas.drawText(mAttrLabelText, mCenterX, mLabelOffsetY, mLabelPaint);
+        canvas.drawText(mAttrLabelText, mCenterX,
+                calcLabelOffsetY(mAttrLabelText, mLabelPaint), mLabelPaint);
     }
 
     private boolean isColor(int type) {
@@ -188,8 +200,12 @@ public class Indicator extends View {
         return colorStops;
     }
 
-    private void calcLabelOffsetY(Rect bounds) {
-        mLabelOffsetY = mCenterY + (bounds.height() >> 1);
+    private float calcLabelOffsetY(String text, Paint paint) {
+
+        Rect bounds = new Rect();
+        paint.getTextBounds(text, 0, text.length(), bounds);
+
+        return mCenterY + (bounds.height() >> 1);
     }
 
     private int calcTextSize(String text, int maxTextSize, Paint paint) {
@@ -207,8 +223,6 @@ public class Indicator extends View {
             paint.setTextSize(textSize);
             paint.getTextBounds(text, 0, text.length(), bounds);
         }
-
-        calcLabelOffsetY(bounds);
 
         return textSize;
     }
@@ -230,7 +244,8 @@ public class Indicator extends View {
             mAttrLabelColor = attr.getColor(R.styleable.Indicator_labelColor, Color.BLACK);
                     //getResources().getColor(android.R.color.primary_text_light));
             mAttrLabelPadding = attr.getDimensionPixelOffset(R.styleable.Indicator_labelPadding, 0);
-            mAttrLabelText = attr.getString(R.styleable.Indicator_labelText);
+            mAttrLabelText = attr.hasValue(R.styleable.Indicator_labelText) ?
+                    attr.getString(R.styleable.Indicator_labelText) : "";
             mAttrLabelTextSize = attr.getDimensionPixelOffset(R.styleable.Indicator_labelTextSize, 100);
             mAttrMaxArc = attr.getFloat(R.styleable.Indicator_maxArc, FULL_CIRCLE);
             mAttrMaxRating = attr.getFloat(R.styleable.Indicator_maxRating, 1);
@@ -241,7 +256,9 @@ public class Indicator extends View {
         }
     }
 
-    private void initPaint() {
+    private void updatePaint() {
+
+        Log.i("Indicator", "updatePaint Called");
 
         mInnerPaint.setAntiAlias(true);
         mInnerPaint.setColor(mAttrInnerColor);
