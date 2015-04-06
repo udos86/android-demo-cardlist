@@ -11,7 +11,6 @@ import android.graphics.SweepGradient;
 import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.util.TypedValue;
 import android.view.View;
 
@@ -62,11 +61,11 @@ public class Indicator extends View {
         initAttributes(attrs);
     }
 
-    public int getLabelColor  () {
+    public int getLabelColor() {
         return mAttrLabelColor;
     }
 
-    public void setLabelColor (int labelColor) {
+    public void setLabelColor(int labelColor) {
 
         this.mAttrLabelColor = labelColor;
         invalidate();
@@ -121,6 +120,7 @@ public class Indicator extends View {
         canvas.rotate(-90, mCenterX, mCenterY);
 
         if (mAttrArcGradient) {
+
             canvas.drawArc(rectArc, 0, targetArc, true, mArcPaint);
             //mArcPaint.setShader(null);
             //mArcPaint.setColor(Color.LTGRAY);
@@ -150,7 +150,7 @@ public class Indicator extends View {
                 calcLabelOffsetY(mAttrLabelText, mLabelPaint), mLabelPaint);
     }
 
-    private boolean isColor(int type) {
+    private boolean typeIsColor(int type) {
         return type >= TypedValue.TYPE_FIRST_COLOR_INT && type <= TypedValue.TYPE_LAST_COLOR_INT;
     }
 
@@ -166,7 +166,7 @@ public class Indicator extends View {
             TypedValue val = new TypedValue();
             mContext.getTheme().resolveAttribute(android.R.attr.windowBackground, val, true);
 
-            if (isColor(val.type)) { // windowBackground is a color
+            if (typeIsColor(val.type)) { // windowBackground is a color
                 color = val.data;
             }
         }
@@ -242,7 +242,7 @@ public class Indicator extends View {
             mAttrInnerColor = attr.getColor(R.styleable.Indicator_innerColor, getBackgroundColor());
             mAttrLabelAutoSize = attr.getBoolean(R.styleable.Indicator_labelAutoSize, true);
             mAttrLabelColor = attr.getColor(R.styleable.Indicator_labelColor, Color.BLACK);
-                    //getResources().getColor(android.R.color.primary_text_light));
+            //getResources().getColor(android.R.color.primary_text_light));
             mAttrLabelPadding = attr.getDimensionPixelOffset(R.styleable.Indicator_labelPadding, 0);
             mAttrLabelText = attr.hasValue(R.styleable.Indicator_labelText) ?
                     attr.getString(R.styleable.Indicator_labelText) : "";
@@ -257,8 +257,6 @@ public class Indicator extends View {
     }
 
     private void updatePaint() {
-
-        Log.i("Indicator", "updatePaint Called");
 
         mInnerPaint.setAntiAlias(true);
         mInnerPaint.setColor(mAttrInnerColor);
