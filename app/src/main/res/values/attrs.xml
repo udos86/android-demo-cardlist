@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <declare-styleable name="Indicator">
+
+        <attr name="arcColors" format="reference" />
+        <attr name="arcEmptyColor" format="color" />
+        <attr name="arcGradient" format="boolean" />
+        <attr name="arcRotation" format="integer" />
+        <attr name="arcWidth" format="dimension" />
+        <attr name="innerRadius" format="dimension" />
+        <attr name="innerRatio" format="float" />
+        <attr name="innerColor" format="color" />
+        <attr name="labelColor" format="color" />
+        <attr name="labelPadding" format="dimension" />
+        <attr name="labelText" format="string" />
+        <attr name="labelTextSize" format="dimension" />
+        <attr name="labelAutoSize" format="boolean" />
+        <attr name="maxArc" format="float" />
+        <attr name="maxRating" format="float" />
+        <attr name="rating" format="float" />
+
+    </declare-styleable>
+
+</resources>

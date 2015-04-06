@@ -4,6 +4,7 @@ package de.udos.democardlist;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.ActionBarActivity;
+import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -57,7 +58,8 @@ public class MainActivity extends ActionBarActivity {
 
         private RecyclerView mRecyclerView;
         private RecyclerView.Adapter mAdapter;
-        private RecyclerView.LayoutManager mLayoutManager;
+        private LinearLayoutManager mLayoutManager;
+        private RecyclerView.ItemAnimator mItemAnimator;
 
         public CardViewFragment() {
             // leerer Konstruktor per Definition
@@ -71,10 +73,14 @@ public class MainActivity extends ActionBarActivity {
 
             mRecyclerView = (RecyclerView) rootView.findViewById(R.id.recycler_view);
             mLayoutManager = new LinearLayoutManager(getActivity());
-            mAdapter = new CardViewItemAdapter(new String[] {"TEST1", "TEST2", "TEST3"});
+            mItemAnimator = new DefaultItemAnimator();
+
+            mAdapter = new CardViewItemAdapter(getActivity(),
+                    new String[] {"TEST1", "TEST2", "TEST3", "TEST4", "TEST5", "TEST6"});
 
             mRecyclerView.setHasFixedSize(true);
             mRecyclerView.setLayoutManager(mLayoutManager);
+            mRecyclerView.setItemAnimator(mItemAnimator);
             mRecyclerView.setAdapter(mAdapter);
 
             return rootView;
