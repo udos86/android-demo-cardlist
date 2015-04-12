@@ -17,7 +17,7 @@
         android:padding="@dimen/activity_horizontal_margin">
 
         <TextView
-            android:id="@+id/text_view"
+            android:id="@+id/tv_card_title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
 
@@ -27,13 +27,12 @@
             class="de.udos.democardlist.Indicator"
             android:id="@+id/indicator_view"
             indicator:arcColors="@array/colors"
+            indicator:arcEmptyColor="#E0E0E0"
             indicator:arcGradient="true"
             indicator:innerColor="@android:color/white"
             indicator:labelColor="@color/primary_text_default_material_light"
             indicator:labelPadding="8dp"
             indicator:labelTextSize="40sp"
-            indicator:maxArc="360"
-            indicator:rating="0.9"
             android:layout_centerVertical="true"
             android:layout_centerHorizontal="true" />
 

@@ -26,12 +26,12 @@ public class Indicator extends View {
     private float mCenterY;
     private int mOffsetX;
     private int mOffsetY;
-    private Paint mArcPaint = new Paint();
-    private Paint mArcEmptyPaint = new Paint(); // TODO
-    private Paint mInnerPaint = new Paint();
-    private Paint mLabelPaint = new Paint();
+    private Paint mArcPaint;
+    private Paint mArcEmptyPaint;
+    private Paint mInnerPaint;
+    private Paint mLabelPaint;
     private int[] mAttrArcColors;
-    private int mAttrArcEmptyColor; // TODO
+    private int mAttrArcEmptyColor;
     private boolean mAttrArcGradient;
     private int mAttrArcRotation; // TODO
     private int mAttrArcWidth; // TODO
@@ -39,13 +39,13 @@ public class Indicator extends View {
     private float mAttrInnerRatio; // TODO
     private int mAttrInnerColor;
     private float mAttrMaxArc;
-    private float mAttrMaxRating;
+    private float mAttrMaxValue;
     private boolean mAttrLabelAutoSize;
     private int mAttrLabelColor;
     private int mAttrLabelPadding;
     private String mAttrLabelText;
     private int mAttrLabelTextSize;
-    private float mAttrRating;
+    private float mAttrValue;
 
     public Indicator(Context context) {
 
@@ -59,6 +59,7 @@ public class Indicator extends View {
         mContext = context;
 
         initAttributes(attrs);
+        initPaint();
     }
 
     public int getLabelColor() {
@@ -81,13 +82,13 @@ public class Indicator extends View {
         invalidate();
     }
 
-    public float getRating() {
-        return mAttrRating;
+    public float getValue() {
+        return mAttrValue;
     }
 
-    public void setRating(float rating) {
+    public void setValue(float value) {
 
-        this.mAttrRating = rating;
+        this.mAttrValue = value;
         invalidate();
     }
 
@@ -122,9 +123,6 @@ public class Indicator extends View {
         if (mAttrArcGradient) {
 
             canvas.drawArc(rectArc, 0, targetArc, true, mArcPaint);
-            //mArcPaint.setShader(null);
-            //mArcPaint.setColor(Color.LTGRAY);
-            //canvas.drawArc(rectArc, targetArc, mAttrMaxArc - targetArc, true, mArcPaint);
 
         } else {
 
@@ -142,6 +140,10 @@ public class Indicator extends View {
                     canvas.drawArc(rectArc, startAngle, targetArc - startAngle, true, mArcPaint);
                 }
             }
+        }
+
+        if (mAttrArcEmptyColor != 0) {
+            canvas.drawArc(rectArc, targetArc, mAttrMaxArc - targetArc, true, mArcEmptyPaint);
         }
 
         canvas.drawCircle(mCenterX, mCenterY, mInnerRadius, mInnerPaint);
@@ -183,7 +185,7 @@ public class Indicator extends View {
     }
 
     private float calcTargetArc() { // calculates the corresponding arc value for rating
-        return mAttrMaxArc * mAttrRating / mAttrMaxRating;
+        return mAttrMaxArc * mAttrValue / mAttrMaxValue;
     }
 
     private float[] calcArcGradientColorStops(int[] colors, float maxArc) {
@@ -238,6 +240,7 @@ public class Indicator extends View {
             if (colorsId != 0) {
                 mAttrArcColors = getResources().getIntArray(colorsId);
             }
+            mAttrArcEmptyColor = attr.getColor(R.styleable.Indicator_arcEmptyColor, 0);
             mAttrArcGradient = attr.getBoolean(R.styleable.Indicator_arcGradient, true);
             mAttrInnerColor = attr.getColor(R.styleable.Indicator_innerColor, getBackgroundColor());
             mAttrLabelAutoSize = attr.getBoolean(R.styleable.Indicator_labelAutoSize, true);
@@ -248,8 +251,8 @@ public class Indicator extends View {
                     attr.getString(R.styleable.Indicator_labelText) : "";
             mAttrLabelTextSize = attr.getDimensionPixelOffset(R.styleable.Indicator_labelTextSize, 100);
             mAttrMaxArc = attr.getFloat(R.styleable.Indicator_maxArc, FULL_CIRCLE);
-            mAttrMaxRating = attr.getFloat(R.styleable.Indicator_maxRating, 1);
-            mAttrRating = attr.getFloat(R.styleable.Indicator_rating, 0.0f);
+            mAttrMaxValue = attr.getFloat(R.styleable.Indicator_maxValue, 1);
+            mAttrValue = attr.getFloat(R.styleable.Indicator_value, 0.0f);
 
         } finally {
             attr.recycle();
@@ -258,22 +261,19 @@ public class Indicator extends View {
 
     private void updatePaint() {
 
-        mInnerPaint.setAntiAlias(true);
-        mInnerPaint.setColor(mAttrInnerColor);
-        mInnerPaint.setStyle(Paint.Style.FILL);
-
-        mLabelPaint.setTypeface(Typeface.create(Typeface.DEFAULT, Typeface.BOLD));
-        mLabelPaint.setAntiAlias(true);
         mLabelPaint.setColor(mAttrLabelColor);
-        mLabelPaint.setTextAlign(Paint.Align.CENTER);
         mLabelPaint.setTextSize(mAttrLabelAutoSize ?
                 calcTextSize(mAttrLabelText, mAttrLabelTextSize, mLabelPaint) : mAttrLabelTextSize);
 
-        mArcPaint.setAntiAlias(true);
-        mArcPaint.setStyle(Paint.Style.FILL);
+        mInnerPaint.setColor(mAttrInnerColor);
+
         if (mAttrArcGradient) {
             mArcPaint.setShader(new SweepGradient(mCenterX, mCenterY, mAttrArcColors,
                     mAttrMaxArc == FULL_CIRCLE ? null : calcArcGradientColorStops(mAttrArcColors, mAttrMaxArc)));
+        }
+
+        if (mAttrArcEmptyColor != 0) {
+            mArcEmptyPaint.setColor(mAttrArcEmptyColor);
         }
         /*
         mShapeDrawable = new ShapeDrawable(new ArcShape(0, calcTargetArc()));
@@ -290,4 +290,29 @@ public class Indicator extends View {
         mShapeDrawable.setBounds(0, 0, mDiameter, mDiameter);
         */
     }
+
+    private void initPaint() {
+
+        mArcPaint = new Paint();
+        mArcPaint.setAntiAlias(true);
+        mArcPaint.setStyle(Paint.Style.FILL);
+
+        mInnerPaint = new Paint();
+        mInnerPaint.setAntiAlias(true);
+        mInnerPaint.setStyle(Paint.Style.FILL);
+
+        mLabelPaint = new Paint();
+        mLabelPaint.setTypeface(Typeface.create(Typeface.DEFAULT, Typeface.BOLD));
+        mLabelPaint.setAntiAlias(true);
+        mLabelPaint.setTextAlign(Paint.Align.CENTER);
+
+        if (mAttrArcEmptyColor != 0) {
+
+            mArcEmptyPaint = new Paint();
+            mArcEmptyPaint.setAntiAlias(true);
+            mArcEmptyPaint.setStyle(Paint.Style.FILL);
+        }
+
+    }
+
 }

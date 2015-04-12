@@ -7,26 +7,29 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.widget.TextView;
 
 
 public class CardViewItemAdapter extends RecyclerView.Adapter<CardViewItemAdapter.ViewHolder> {
 
     private Context mContext;
-    private String[] mData;
+    private Rating[] mData;
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
 
-        private final Indicator mIndicator;
+        private final TextView mCardTitleView;
+        private final Indicator mIndicatorView;
 
 
         public ViewHolder(View v) {
 
             super(v);
-            mIndicator = (Indicator) v.findViewById(R.id.indicator_view);
+            mIndicatorView = (Indicator) v.findViewById(R.id.indicator_view);
+            mCardTitleView = (TextView) v.findViewById(R.id.tv_card_title);
         }
     }
 
-    public CardViewItemAdapter(Context context, String[] data) {
+    public CardViewItemAdapter(Context context, Rating[] data) {
 
         mContext = context;
         mData = data;
@@ -44,9 +47,12 @@ public class CardViewItemAdapter extends RecyclerView.Adapter<CardViewItemAdapte
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
 
+        Rating item = mData[position];
 
-        holder.mIndicator.setLabelText("67%");
-        holder.mIndicator.setRating(0.67f);
+        holder.mCardTitleView.setText(item.getTitle());
+
+        holder.mIndicatorView.setLabelText(Math.round(item.getValue() * 100) + "%");
+        holder.mIndicatorView.setValue(item.getValue());
 
         Animation anim = AnimationUtils.loadAnimation(mContext, android.R.anim.fade_in);
         anim.setStartOffset(200 * position);

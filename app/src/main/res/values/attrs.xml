@@ -17,8 +17,8 @@
         <attr name="labelTextSize" format="dimension" />
         <attr name="labelAutoSize" format="boolean" />
         <attr name="maxArc" format="float" />
-        <attr name="maxRating" format="float" />
-        <attr name="rating" format="float" />
+        <attr name="maxValue" format="float" />
+        <attr name="value" format="float" />
 
     </declare-styleable>
 
