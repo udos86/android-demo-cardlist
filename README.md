@@ -1,1 +1,1 @@
-Sample project exploring new Android Lollipop RecyclerView and CardView
+Native Android project exploring Material Design, RecyclerView and CardView
